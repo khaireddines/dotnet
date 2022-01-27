@@ -1,13 +1,15 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using ExerciceOne.Models;
+using Microsoft.AspNetCore.Mvc;
 
-namespace ExerciceOne.Models;
+namespace ExerciceOne.Service;
 
-public class ExerciseService
+public class ContactService
 {
     private readonly IMongoCollection<Contact> _contactCollection;
 
-    public ExerciseService(IOptions<MongoDBSettings> mongoDBSettings)
+    public ContactService(IOptions<MongoDBSettings> mongoDBSettings)
     {
         var mongoClient = new MongoClient(
             mongoDBSettings.Value.ConnectionString);
@@ -19,6 +21,9 @@ public class ExerciseService
             mongoDBSettings.Value.ContactCollection);
     }
     public async Task<List<Contact>> GetAsync() =>
-        await _contactCollection.Find(_ => true).ToListAsync();
+        await _contactCollection.Find(_ => true).Limit(500).ToListAsync();
+
+    public List<Contact> GetAll() =>
+        _contactCollection.Find(_ => true).Limit(500).ToList();
     
 }
